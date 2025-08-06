@@ -1,0 +1,259 @@
+{% assign main_menu_linkslist = linklists[section.settings.menu].links %}
+{{ shop.customer_accounts_enabled  }}
+<div class="relative bg-white" x-data="{ mobileMenuOpen: false }">
+  <div class="mx-auto px-4 sm:px-6 max-w-7xl">
+    <div class="relative flex items-center justify-between w-full py-6 md:py-4">
+      <!-- STORE NAME / STORE LOGO -->
+      <div class="flex items-center">
+        <h1 class="text-xl font-bold truncate capitalize">{{ shop.name }}</h1>
+      </div>
+
+      <!-- NAVIGATION MENU -->
+      <nav class="hidden lg:flex items-center justify-center flex-1 px-8 space-x-8">
+        {% for link in main_menu_linkslist %}
+          {% if link.links != blank %}
+            <div class="relative" x-data="{ isOpen: false }" @mouseleave="isOpen = false">
+              <button
+                @mouseenter="isOpen = true"
+                type="button"
+                class="group inline-flex items-center text-base text-gray-800 font-bold hover:text-black transition-colors duration-300"
+              >
+                {{ link.title }}
+                <span
+                  class="ml-2 transform transition-transform duration-200 ease-in-out"
+                  :class="{ 'rotate-180': isOpen }"
+                >
+                  {% render 'icon-dropdown' %}
+                </span>
+              </button>
+
+              {% comment %} dropdown links {% endcomment %}
+
+              <div
+                x-show="isOpen"
+                @mouseenter="isOpen = true"
+                @mouseleave="isOpen = false"
+                x-transition:enter="transition ease-out duration-900"
+                x-transition:enter-start="opacity-0 transform scale-10"
+                x-transition:enter-end="opacity-100 transform scale-100"
+                x-transition:leave="transition ease-in duration-850"
+                x-transition:leave-start="opacity-100 transform scale-100"
+                x-transition:leave-end="opacity-0 transform scale-10"
+                class="absolute z-10 -ml-5 mt-5 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2"
+              >
+                <div class="shadow-lg border ring-black ring-opacity-5 overflow-hidden rounded-lg">
+                  <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
+                    <!-- CREATE THE SUBLINK -->
+                    {% for child in link.links %}
+                      <a href="{{ child.url }}" class="-m-3 p-3 flex items start rounded-lg hover:bg-gray-100">
+                        <div class="ml-4">
+                          <p class="text-gray-900 text-base font-medium">{{ child.title }}</p>
+                        </div>
+                      </a>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {% else %}
+            <div class="relative">
+              <a
+                href="{{ link.url }}"
+                class="
+                  relative text-base text-gray-800 hover:text-black transition-colors duration-300
+                  after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0
+                  after:bg-black after:transition-all after:duration-300 hover:after:w-full  font-bold text-center{% if link.active == true %}text-white{% endif  %}
+                "
+              >
+                {{ link.title }}
+              </a>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </nav>
+
+      <div class="flex items-center space-x-6">
+        <a
+          href="{{ routes.cart_url }}"
+          class="relative text-base text-gray-800 hover:text-black transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full"
+        >
+          {% render 'icon-shopping-bag' %}
+        </a>
+        <div class="hidden md:flex items-center space-x-6">
+          {% if shop.customer_accounts_enabled %}
+          <a
+            href="{{ routes.account_login_url }}"
+            class="relative text-base text-gray-800 hover:text-black transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full"
+            >Login</a
+          >
+             <a
+            href="{{ routes.account_register_url }}"
+            class="relative text-base text-gray-800 hover:text-black transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full"
+            >Register</a
+          >
+          {% endif %}
+         
+        </div>
+
+        <div class="flex items-center lg:hidden">
+          <button
+            @click="mobileMenuOpen = true"
+            type="button"
+            class="inline-flex items-center justify-center p-2 ml-2 text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-300"
+          >
+            <span class="sr-only">Open menu</span>
+            {% render 'icon-menu' %}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    x-show="mobileMenuOpen"
+    class="fixed inset-0 z-40 lg:hidden"
+    role="dialog"
+    aria-modal="true"
+  >
+    <!-- Background backdrop with blur effect -->
+    <div
+      class="fixed inset-0 backdrop-blur-sm bg-black/30"
+      x-show="mobileMenuOpen"
+      @click="mobileMenuOpen = false"
+      aria-hidden="true"
+      x-transition:enter="transition-all ease-out duration-500"
+      x-transition:enter-start="opacity-0 backdrop-blur-none"
+      x-transition:enter-end="opacity-100 backdrop-blur-sm"
+      x-transition:leave="transition-all ease-in duration-300"
+      x-transition:leave-start="opacity-100 backdrop-blur-sm"
+      x-transition:leave-end="opacity-0 backdrop-blur-none"
+    ></div>
+
+    <!-- Mobile menu panel with 3D effect -->
+    <div
+      class="fixed inset-y-0 right-0 z-40 w-full max-w-sm bg-white shadow-[0_0_50px_rgba(0,0,0,0.15)]"
+      x-show="mobileMenuOpen"
+      x-transition:enter="transform transition ease-out duration-500"
+      x-transition:enter-start="translate-x-full rotate-12 opacity-0"
+      x-transition:enter-end="translate-x-0 rotate-0 opacity-100"
+      x-transition:leave="transform transition ease-in duration-300"
+      x-transition:leave-start="translate-x-0 rotate-0 opacity-100"
+      x-transition:leave-end="translate-x-full rotate-12 opacity-0"
+    >
+      <div class="flex flex-col h-full overflow-y-scroll">
+        <!-- Mobile menu header -->
+        <div class="flex items-center justify-between px-4 pt-5 pb-2">
+          <div>
+            <h1 class="text-lg font-medium text-gray-900 capitalize">{{ shop.name }}</h1>
+          </div>
+          <button
+            @click="mobileMenuOpen = false"
+            type="button"
+            class="border-b-2 border-gray-500 -mr-2 p-2 rounded-md inline-flex items-center justify-center text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-300"
+          >
+            <span class="sr-only">Close menu</span>
+            {% render 'icon-close' %}
+          </button>
+        </div>
+
+        <!-- Account Links for Mobile/Tablet -->
+        <div class="px-4 py-3 md:hidden border-b border-gray-200">
+          <div class="flex flex-col space-y-3">
+            <a
+              href="{{ routes.account_login_url }}"
+              class="flex items-center px-4 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+            >
+              Login
+            </a>
+            <a
+              href="{{ routes.account_register_url }}"
+              class="flex items-center px-4 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+            >
+              Register
+            </a>
+          </div>
+        </div>
+
+        <!-- NAVIGATION LINKS FOR MOBILE MENU -->
+        <div class="px-4 py-2 flex-1 overflow-y-auto">
+          <nav class="space-y-2">
+            {% for link in main_menu_linkslist %}
+              {% if link.links != blank %}
+                <div class="relative" x-data="{ dropdownOpen: false }">
+                  <button
+                    @click="dropdownOpen = !dropdownOpen"
+                    type="button"
+                    class="border-b-2 border-gray-500 flex items-center justify-between w-full py-3 px-4 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg group"
+                  >
+                    <span>{{ link.title }}</span>
+                    <span
+                      class="ml-2 transform transition-transform duration-200 ease-in-out"
+                      :class="{ 'rotate-180': dropdownOpen }"
+                    >
+                      {% render 'icon-dropdown' %}
+                    </span>
+                  </button>
+
+                  {% comment %} dropdown links {% endcomment %}
+
+                  <div
+                    x-show="dropdownOpen"
+                    x-collapse
+                    x-cloak
+                    x-transition:enter="transition-all ease-out duration-300"
+                    x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                    x-transition:leave="transition-all ease-in duration-200"
+                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
+                    class="relative z-10 mt-1 w-full bg-gray-50/80 backdrop-blur-sm rounded-md overflow-hidden"
+                  >
+                    <div class="shadow-lg ring-black ring-opacity-5 overflow-hidden bg-white/90 backdrop-blur-sm">
+                      <div class="relative grid gap-3 px-4 py-4">
+                        <!-- CREATE THE SUBLINK -->
+                        {% for child in link.links %}
+                          <a
+                            href="{{ child.url }}"
+                            class="border-b-2 border-gray-500 block py-2.5 px-4 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200 hover:pl-6 hover:text-black"
+                            @click="mobileMenuOpen = false"
+                          >
+                            {{ child.title }}
+                          </a>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              {% else %}
+                <a
+                  href="{{ link.url }}"
+                  class="border-b-2 border-gray-500 block w-full py-3 px-4 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 hover:pl-6 {% if link.active %}text-black bg-gray-50{% endif %}"
+                  @click="mobileMenuOpen = false"
+                >
+                  {{ link.title }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Header Menu",
+        "default": "main-menu"
+      }
+    ]
+  }
+{% endschema %}
