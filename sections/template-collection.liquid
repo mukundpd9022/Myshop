@@ -1,12 +1,13 @@
 <div class="px-4 py-8">
-  {% paginate collection.products by 6 %}
+  <a href="{{ routes.collections_url  }}" class="text-base text-center text-gray-500 hover:underline block my-4 hover:text-gray-800 hover:text-lg">&les; Go back to collections</a>
+  {% paginate collection.products by section.settings.collection_id %}
     <h1 class="text-3xl text-center">{{ collection.title }}</h1>
 
     <div class="max-w-6xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {% for product in collection.products %}
          
-          {% render 'product-card', product_product:product %}
+          {% render 'product-card', product_product:product, vendorko:section.settings.vendor_id  %}
 
         {% else %}
           <p>There are no products inside of this collection</p>
@@ -14,6 +15,27 @@
       </div>
     </div>
 
-    {% render 'pagination', pagination: paginate %}
+    {% render 'pagination', pagination: paginate%}
   {% endpaginate %}
 </div>
+
+
+{% schema %}
+  {
+    "name": "Template Collection",
+    "settings": [{
+      "type": "number",
+      "id": "collection_id",
+      "label": "number of products per page",
+      "default":6
+    
+    },
+    {
+      "type": "checkbox",
+      "id": "vendor_id",
+      "label": "Show Vendor Name",
+      "default": true
+    }
+  ]
+  }
+{% endschema %}

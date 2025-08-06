@@ -8,21 +8,31 @@
                     alt="{{ product_product.featured_image.alt }}"
                     height="200"
                     width="200"
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-cover transition duration-1000 ease-in-out hover:scale-125 transform"
                   >
 
                 </div>
               {% else %}
-                {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover bg-gray-100' }}
+                <div class="h-80 overflow-hidden transition duration-1000 ease-in-out hover:scale-125 transform">
+                  {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover bg-gray-100' }}
+                  
+                </div>
               {% endif %}
               </a>
               <div class="flex flex-col p-4">
-                <span class="text-sm text-gray-400">{{ product_product.vendor }}</span>
-  
+                {% if vendorko %}
+                  
+                  <span class="text-sm text-gray-400 capitalize" >{{ product_product.vendor }}</span>
+                 
+                  {% else %}
+                  <span class="text-sm text-gray-400" >Unknown</span>
+
+                   
+                {% endif %}
                 <a href="{{ product_product.url }}" class="text-gray-800 uppercase font-medium">{{ product_product.title }}</a>
   
                 <p class="text-gray-400">{{ product_product.price | money }}</p>
-tt
+
               </div>
             </div>
           </div>
